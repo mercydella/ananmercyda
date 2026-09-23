@@ -3,249 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith Focus: Pomodoro & Productivity OS</title>
-    <meta name="description" content="Aplikasi Pomodoro futuristik berfitur lengkap: Circular Neon Timer, Ambience Soundscapes, Taman Fokus Virtual (Plant a Tree), Task Manager Terpadu, dan Analisis Produktivitas.">
+    <title>Petualangan Cendekia: Ekspedisi Pulau Pengetahuan</title>
+    <meta name="description" content="Game edukasi interaktif seru dengan unsur Matematika, Sains, Bahasa, Geografi, dan Logika dalam petualangan RPG yang memukau!">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="theme-focus">
-    <div class="app-shell">
-        <!-- TOP NAVIGATION BAR -->
-        <header class="top-nav">
-            <div class="brand-wrap">
-                <div class="brand-icon">⚡</div>
+<body>
+    <!-- Fullscreen Particle Effects Canvas -->
+    <canvas id="fx-canvas"></canvas>
+
+    <div class="app-container">
+        <!-- TOP HEADER & PLAYER HUD -->
+        <header class="top-header">
+            <div class="brand-section">
+                <div class="brand-badge">⚡</div>
                 <div>
-                    <h1 class="brand-title">Zenith Focus</h1>
-                    <div class="brand-caption">Productivity & Pomodoro OS</div>
+                    <h1 class="brand-title">Petualangan Cendekia</h1>
+                    <div class="brand-subtitle" id="hud-player-rank">🌱 Murid Pemula (Lv. 1)</div>
                 </div>
             </div>
 
-            <!-- View Switcher Tabs -->
-            <nav class="view-tabs-bar">
-                <button class="nav-tab-btn active" data-view="timer">⏱️ Timer</button>
-                <button class="nav-tab-btn" data-view="garden">🌲 Taman Fokus</button>
-                <button class="nav-tab-btn" data-view="stats">📊 Statistik</button>
-            </nav>
+            <!-- Player Status HUD -->
+            <div class="player-hud">
+                <!-- Health Bar -->
+                <div class="hud-item">
+                    <div class="hud-label">Darah (HP)</div>
+                    <div class="progress-container">
+                        <div class="progress-fill fill-hp" id="hud-hero-hp-bar" style="width: 100%;"></div>
+                    </div>
+                    <span id="hud-hero-hp-text" style="font-size: 0.72rem; color: #94a3b8; font-weight: 600;">100/100 HP</span>
+                </div>
 
-            <!-- Nav Action Buttons -->
-            <div class="nav-actions">
-                <button class="btn-nav-control" id="btn-toggle-fullscreen" title="Layar Penuh (Zen Mode)">⛶ Fullscreen</button>
-                <button class="btn-nav-control" id="btn-open-settings" title="Pengaturan Durasi & Suara">⚙️ Pengaturan</button>
+                <!-- EXP Progress -->
+                <div class="hud-item">
+                    <div class="hud-label">Pengalaman (EXP)</div>
+                    <div class="progress-container">
+                        <div class="progress-fill fill-exp" id="hud-exp-bar" style="width: 0%;"></div>
+                    </div>
+                    <span id="hud-exp-text" style="font-size: 0.72rem; color: #94a3b8; font-weight: 600;">0 / 150 EXP</span>
+                </div>
+
+                <!-- Gold Coins -->
+                <div class="hud-item">
+                    <div class="hud-value-badge" id="hud-coins">🪙 100</div>
+                </div>
+            </div>
+
+            <!-- Controls & Modals Trigger -->
+            <div class="header-controls">
+                <button class="btn-icon-control" id="btn-open-shop" title="Buka Toko Cendekia">🛒 Toko</button>
+                <button class="btn-icon-control" id="btn-open-profile" title="Statistik & Piala">🏆 Profil</button>
+                <button class="btn-icon-control" id="btn-toggle-audio" title="Efek Suara">🔊 SFX</button>
+                <button class="btn-icon-control" id="btn-toggle-music" title="Musik Latar">🎵 BGM</button>
             </div>
         </header>
 
         <!-- ==========================================================
-             VIEW 1: POMODORO TIMER PANEL
+             SCREEN 1: MAP VIEW (ZONES & EXPEDITIONS)
              ========================================================== -->
-        <main class="app-view-panel active" id="view-timer">
-            <div class="timer-card-wrapper">
-                <!-- Mode Switchers -->
-                <div class="mode-switch-group">
-                    <button class="mode-btn active" data-mode="focus">🍅 Fokus</button>
-                    <button class="mode-btn" data-mode="shortBreak">☕ Istirahat Pendek</button>
-                    <button class="mode-btn" data-mode="longBreak">🌴 Istirahat Panjang</button>
-                </div>
+        <main class="game-screen active" id="screen-map">
+            <div class="map-header">
+                <h2 class="map-title">Kepulauan Pengetahuan</h2>
+                <p class="map-desc">Pilih pulau tantangan yang ingin dijelajahi! Hadapi bos pengetahuan dengan ketajaman berpikir dan bebaskan pulau dari kabut kebodohan.</p>
+            </div>
 
-                <!-- Active Pinned Task Banner -->
-                <div class="active-task-banner" id="active-task-banner">
-                    <span>🎯</span>
-                    <span id="active-task-text">Sedang Fokus: Mempelajari materi baru</span>
-                </div>
-
-                <!-- Circular Neon Glow Progress Ring -->
-                <div class="timer-dial-container">
-                    <svg class="timer-svg" viewBox="0 0 320 320">
-                        <!-- Background Circle Track -->
-                        <circle class="circle-track" cx="160" cy="160" r="140"></circle>
-                        <!-- Dynamic Progress Fill -->
-                        <circle class="circle-progress" id="timer-circle-progress" cx="160" cy="160" r="140"></circle>
-                    </svg>
-
-                    <!-- Inner Timer Display -->
-                    <div class="timer-inner-content">
-                        <span class="timer-mode-tag" id="timer-mode-tag">Sesi Fokus</span>
-                        <div class="timer-time-display" id="timer-time">25:00</div>
-                        <span class="cycle-indicator" id="timer-cycle-indicator">Siklus #1 dari 4</span>
+            <!-- 5 Subject Island Zones -->
+            <div class="zones-grid">
+                <!-- Zone 1: Matematika -->
+                <div class="zone-card" data-zone="math" id="zone-card-math">
+                    <div class="zone-badge-wrap">
+                        <div class="zone-icon" style="color: #3b82f6;">📐</div>
+                        <span class="zone-status-tag">Matematika</span>
+                    </div>
+                    <div>
+                        <h3 class="zone-name">Lembah Matematika</h3>
+                        <div class="zone-subtitle">Altar Deret Angka & Kalkulasi</div>
+                    </div>
+                    <p class="zone-desc">Lawan monster kebingungan berhitung dengan kecepatan nalar operasi angka, pecahan, dan geometri!</p>
+                    <div class="zone-boss-info">
+                        <span>Penjaga: <strong>Golem Fraksi Kuno</strong></span>
+                        <span>🗿 120 HP</span>
                     </div>
                 </div>
 
-                <!-- Timer Controls Toolbar -->
-                <div class="timer-controls-group">
-                    <button class="btn-timer-secondary" id="btn-timer-reset" title="Ulangi waktu (Shortcut: R)">🔄 Reset</button>
-                    <button class="btn-timer-primary" id="btn-timer-start" title="Mulai / Jeda (Shortcut: Spasi)">
-                        <span>▶</span> Mulai
-                    </button>
-                    <button class="btn-timer-secondary" id="btn-timer-skip" title="Lewati ke sesi berikutnya">⏭ Lewati</button>
-                    <button class="btn-timer-secondary" id="btn-add-5min" title="Tambah 5 Menit">+5 Menit</button>
+                <!-- Zone 2: Sains / IPA -->
+                <div class="zone-card" data-zone="science" id="zone-card-science">
+                    <div class="zone-badge-wrap">
+                        <div class="zone-icon" style="color: #10b981;">🔬</div>
+                        <span class="zone-status-tag">Sains & IPA</span>
+                    </div>
+                    <div>
+                        <h3 class="zone-name">Hutan Alkimia & Alam</h3>
+                        <div class="zone-subtitle">Laboratorium Biosfer & Antariksa</div>
+                    </div>
+                    <p class="zone-desc">Kuasai hukum alam semesta, tata surya, sains tubuh manusia, dan keajaiban biologi bumi!</p>
+                    <div class="zone-boss-info">
+                        <span>Penjaga: <strong>Chimera Entropi</strong></span>
+                        <span>🐉 120 HP</span>
+                    </div>
+                </div>
+
+                <!-- Zone 3: Bahasa & Kosakata -->
+                <div class="zone-card" data-zone="language" id="zone-card-language">
+                    <div class="zone-badge-wrap">
+                        <div class="zone-icon" style="color: #f59e0b;">📜</div>
+                        <span class="zone-status-tag">Bahasa & Sastra</span>
+                    </div>
+                    <div>
+                        <h3 class="zone-name">Kuil Aksara Luhur</h3>
+                        <div class="zone-subtitle">Perpustakaan Kata & Sastra</div>
+                    </div>
+                    <p class="zone-desc">Pecahkan teka-teki makna peribahasa, sinonim kata berbobot, dan struktur tata bahasa baku!</p>
+                    <div class="zone-boss-info">
+                        <span>Penjaga: <strong>Sphinx Silensium</strong></span>
+                        <span>🦁 120 HP</span>
+                    </div>
+                </div>
+
+                <!-- Zone 4: IPS & Geografi -->
+                <div class="zone-card" data-zone="geography" id="zone-card-geography">
+                    <div class="zone-badge-wrap">
+                        <div class="zone-icon" style="color: #06b6d4;">🧭</div>
+                        <span class="zone-status-tag">IPS & Sejarah</span>
+                    </div>
+                    <div>
+                        <h3 class="zone-name">Samudra Dunia & Sejarah</h3>
+                        <div class="zone-subtitle">Kepulauan Penjelajah Abadi</div>
+                    </div>
+                    <p class="zone-desc">Jelajahi garis khatulistiwa, landmark megah dunia, dan penemuan tokoh revolusioner peradaban!</p>
+                    <div class="zone-boss-info">
+                        <span>Penjaga: <strong>Kraken Kartografi</strong></span>
+                        <span>🐙 120 HP</span>
+                    </div>
+                </div>
+
+                <!-- Zone 5: Logika & Nalar Kritis -->
+                <div class="zone-card" data-zone="logic" id="zone-card-logic">
+                    <div class="zone-badge-wrap">
+                        <div class="zone-icon" style="color: #8b5cf6;">🧩</div>
+                        <span class="zone-status-tag">Logika Nalar</span>
+                    </div>
+                    <div>
+                        <h3 class="zone-name">Labirin Logika Batin</h3>
+                        <div class="zone-subtitle">Menara Penalaran Deduktif</div>
+                    </div>
+                    <p class="zone-desc">Asah daya analisis kritis, deduksi silogisme, dan pemecahan teka-teki logika yang mencengangkan!</p>
+                    <div class="zone-boss-info">
+                        <span>Penjaga: <strong>Raja Ilusi Paradoks</strong></span>
+                        <span>👑 140 HP</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Ambience Soundscapes Section -->
-            <section class="ambience-section">
-                <div class="ambience-title">
-                    <span>🎧</span> Suara Ambience Fokus (100% Offline Synthesizer)
-                </div>
-                <div class="ambience-grid">
-                    <button class="ambience-btn" data-ambience="rain">
-                        <span style="font-size: 1.5rem;">🌧️</span>
-                        <span>Hujan Lembut</span>
-                    </button>
-                    <button class="ambience-btn" data-ambience="campfire">
-                        <span style="font-size: 1.5rem;">🪵</span>
-                        <span>Api Unggun</span>
-                    </button>
-                    <button class="ambience-btn" data-ambience="waves">
-                        <span style="font-size: 1.5rem;">🌊</span>
-                        <span>Ombak Pantai</span>
-                    </button>
-                    <button class="ambience-btn" data-ambience="binaural">
-                        <span style="font-size: 1.5rem;">🧠</span>
-                        <span>Binaural 40Hz</span>
-                    </button>
-                </div>
-            </section>
+            <!-- Mini-Games Arena Section -->
+            <section class="minigames-section">
+                <h3 class="minigames-title">🎮 Arena Latihan & Mini-Games</h3>
+                <div class="minigames-grid">
+                    <div class="minigame-card" id="btn-open-anagram">
+                        <div style="font-size: 1.75rem;">🔤</div>
+                        <h4 style="font-family: var(--font-heading); font-size: 1.1rem;">Word Craft: Susun Kata</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Rangkai huruf-huruf acak menjadi istilah sains, matematika, dan pengetahuan!</p>
+                        <span style="font-size: 0.78rem; color: #f59e0b; font-weight: 700; margin-top: auto;">Hadiah: +50 Koin & +75 EXP</span>
+                    </div>
 
-            <!-- Integrated Focus Task Manager -->
-            <section class="tasks-panel">
-                <div class="tasks-header">
-                    <h3 class="tasks-title">📋 Target Fokus Hari Ini</h3>
-                </div>
-
-                <!-- Add Task Form -->
-                <form class="form-task-add" id="form-add-task">
-                    <input type="text" class="input-task-text" id="input-task-title" placeholder="Apa yang ingin Anda selesaikan sekarang?" required>
-                    <input type="number" class="input-task-number" id="input-task-est" min="1" max="12" value="1" title="Target jumlah pomodoro" style="width: 70px;">
-                    <select class="select-task-priority" id="select-task-priority">
-                        <option value="high">Prioritas Tinggi</option>
-                        <option value="medium" selected>Prioritas Sedang</option>
-                        <option value="low">Prioritas Rendah</option>
-                    </select>
-                    <button type="submit" class="btn-task-submit">+ Tambah Tugas</button>
-                </form>
-
-                <!-- Task Items Container -->
-                <div class="tasks-list-container" id="tasks-list-container">
-                    <!-- Populated dynamically by JavaScript -->
+                    <div class="minigame-card" id="btn-open-match">
+                        <div style="font-size: 1.75rem;">🔗</div>
+                        <h4 style="font-family: var(--font-heading); font-size: 1.1rem;">Match & Connect: Pasangan Konsep</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Hubungkan pasangan planet, penemu bersejarah, dan kosakata secara akurat!</p>
+                        <span style="font-size: 0.78rem; color: #f59e0b; font-weight: 700; margin-top: auto;">Hadiah: +60 Koin & +90 EXP</span>
+                    </div>
                 </div>
             </section>
         </main>
 
         <!-- ==========================================================
-             VIEW 2: FOCUS GARDEN (GAMIFICATION)
+             SCREEN 2: RPG COMBAT BATTLE ARENA
              ========================================================== -->
-        <main class="app-view-panel" id="view-garden">
-            <div class="garden-header">
-                <div>
-                    <h2 style="font-family: var(--font-heading); font-size: 1.6rem;">🌲 Taman Fokus Virtual</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Setiap sesi fokus 25 menit yang tuntas akan menumbuhkan pohon virtual bercahaya untuk menghijaukan taman produktivitas Anda.</p>
+        <main class="game-screen" id="screen-battle">
+            <div class="battle-container">
+                <!-- Battle Top Navigation -->
+                <div class="battle-nav-bar">
+                    <button class="btn-icon-control btn-back-map" id="btn-battle-back">⬅ Kembali ke Peta</button>
+                    <div class="zone-tag" id="battle-zone-tag">Zona Pertarungan</div>
+                    <div class="combo-badge" id="battle-combo-badge">🔥 COMBO x1</div>
                 </div>
-                <div class="hud-value-badge" id="garden-count-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 1rem; border-color: #10b981;">
-                    0 Pohon Mekar
-                </div>
-            </div>
 
-            <!-- Virtual Forest Grid -->
-            <div class="garden-grid" id="garden-grid">
-                <!-- Trees rendered dynamically -->
+                <!-- Combat Stage: Hero vs Monster -->
+                <div class="combat-stage">
+                    <!-- Hero Card -->
+                    <div class="combat-card" id="battle-hero-card">
+                        <div class="combat-card-header">
+                            <div class="combat-avatar" style="border-color: #10b981;">🧙‍♂️</div>
+                            <div class="combat-info">
+                                <h3 class="combat-name" id="hud-player-name">Ksatria Cendekia</h3>
+                                <div class="combat-title">Pahlawan Pengetahuan</div>
+                            </div>
+                        </div>
+                        <div class="combat-hp-wrap">
+                            <div class="combat-hp-bar">
+                                <div class="hp-fill-hero" id="hero-battle-hp-bar" style="width: 100%;"></div>
+                            </div>
+                            <div class="hp-text">
+                                <span>Status Energi</span>
+                                <span id="hero-battle-hp-text">Siap Bertempur</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monster Boss Card -->
+                    <div class="combat-card" id="battle-monster-card">
+                        <div class="combat-card-header">
+                            <div class="combat-avatar" id="monster-avatar" style="border-color: #ef4444;">🗿</div>
+                            <div class="combat-info">
+                                <h3 class="combat-name" id="monster-name">Golem Fraksi Kuno</h3>
+                                <div class="combat-title" id="monster-title">Penjaga Angka Keramat</div>
+                            </div>
+                        </div>
+                        <div class="combat-hp-wrap">
+                            <div class="combat-hp-bar">
+                                <div class="hp-fill-monster" id="monster-hp-bar" style="width: 100%;"></div>
+                            </div>
+                            <div class="hp-text">
+                                <span>Darah Musuh</span>
+                                <span id="monster-hp-text">120 / 120 HP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Box -->
+                <div class="question-panel">
+                    <!-- Timer Bar -->
+                    <div class="timer-section">
+                        <div class="timer-bar-wrap">
+                            <div class="timer-fill" id="battle-timer-bar" style="width: 100%;"></div>
+                        </div>
+                        <div class="timer-text" id="battle-timer-text">20s</div>
+                    </div>
+
+                    <!-- Question Content -->
+                    <h3 class="question-text" id="battle-question-text">Memuat pertanyaan tantangan...</h3>
+                    <div class="question-clue" id="battle-question-clue">💡 Petunjuk: Pikirkan dengan teliti sebelum menjawab!</div>
+
+                    <!-- 4 Multiple Choice Options -->
+                    <div class="options-grid" id="battle-options">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+                    <!-- Spells Toolbar -->
+                    <div class="spells-bar">
+                        <button class="spell-btn" id="spell-5050" title="Eliminasi 2 pilihan salah">
+                            🪄 Dewi Athena (50:50) <span class="spell-badge-count" id="count-spell-5050">3</span>
+                        </button>
+                        <button class="spell-btn" id="spell-freeze" title="Hentikan waktu +10 detik">
+                            ⏳ Bekukan Waktu <span class="spell-badge-count" id="count-spell-freeze">2</span>
+                        </button>
+                        <button class="spell-btn" id="spell-shield" title="Tangkis 1 kesalahan tanpa terkena serangan">
+                            🛡️ Perisai Cendekia <span class="spell-badge-count" id="count-spell-shield">2</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </main>
 
         <!-- ==========================================================
-             VIEW 3: PRODUCTIVITY ANALYTICS & STATS
+             SCREEN 3: MINI-GAME 1 - WORD CRAFT ANAGRAM
              ========================================================== -->
-        <main class="app-view-panel" id="view-stats">
-            <!-- Metrics Summary Cards -->
-            <div class="stats-summary-grid">
-                <div class="stat-metric-card">
-                    <span class="stat-metric-label">Total Waktu Fokus</span>
-                    <span class="stat-metric-val" id="stat-total-time">0 Jam</span>
-                </div>
-                <div class="stat-metric-card">
-                    <span class="stat-metric-label">Sesi Pomodoro Selesai</span>
-                    <span class="stat-metric-val" id="stat-total-pomodoros">0 Sesi</span>
-                </div>
-                <div class="stat-metric-card">
-                    <span class="stat-metric-label">Streak Produktif</span>
-                    <span class="stat-metric-val" id="stat-streak">1 Hari 🔥</span>
-                </div>
-                <div class="stat-metric-card">
-                    <span class="stat-metric-label">Pohon Ditanam</span>
-                    <span class="stat-metric-val" id="stat-trees">0 🌲</span>
-                </div>
+        <main class="game-screen" id="screen-anagram">
+            <div class="battle-nav-bar" style="margin-bottom: 1.5rem;">
+                <button class="btn-icon-control btn-back-map">⬅ Kembali ke Peta</button>
+                <div class="zone-tag" style="color: #f59e0b; border-color: #f59e0b;">🔤 Word Craft: Susun Huruf</div>
+                <div></div>
             </div>
 
-            <!-- Weekly Activity Bar Chart -->
-            <div class="chart-card">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="font-family: var(--font-heading); font-size: 1.25rem;">Aktivitas Fokus 7 Hari Terakhir</h3>
-                    <span style="font-size: 0.8rem; color: var(--text-secondary);">(Satuan: Menit)</span>
+            <div class="anagram-panel">
+                <h3 style="font-family: var(--font-heading); font-size: 1.6rem;" id="anagram-subject">Kategori: Sains</h3>
+                <div class="question-clue" id="anagram-clue" style="width: 100%; text-align: center;">💡 Petunjuk: Sedang memuat...</div>
+
+                <div style="font-size: 0.9rem; color: #94a3b8;">Klik huruf acak di bawah untuk menyusun ke kotak kata:</div>
+
+                <!-- Word Slots -->
+                <div class="anagram-slots" id="anagram-slots">
+                    <!-- Rendered dynamically -->
                 </div>
-                <div class="chart-bars-wrap" id="stats-weekly-chart">
-                    <!-- Weekly bars rendered dynamically -->
+
+                <!-- Letters Pool -->
+                <div class="anagram-letters" id="anagram-letters">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </main>
+
+        <!-- ==========================================================
+             SCREEN 4: MINI-GAME 2 - MATCH & CONNECT
+             ========================================================== -->
+        <main class="game-screen" id="screen-match">
+            <div class="battle-nav-bar" style="margin-bottom: 1.5rem;">
+                <button class="btn-icon-control btn-back-map">⬅ Kembali ke Peta</button>
+                <div class="zone-tag" style="color: #06b6d4; border-color: #06b6d4;">🔗 Match & Connect: Pasangan Konsep</div>
+                <div></div>
+            </div>
+
+            <div class="match-panel">
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; text-align: center;" id="match-topic">Misi: Hubungkan Konsep</h3>
+                <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Klik salah satu kartu di kolom kiri, lalu klik pasangannya di kolom kanan!</p>
+
+                <div class="match-grid">
+                    <div class="match-column" id="match-col-left"></div>
+                    <div class="match-column" id="match-col-right"></div>
                 </div>
             </div>
         </main>
     </div>
 
     <!-- ==========================================================
-         SETTINGS MODAL
+         MODALS
          ========================================================== -->
-    <div class="modal-overlay" id="modal-settings">
-        <div class="modal-window">
-            <div class="modal-header">
-                <h3 style="font-family: var(--font-heading); font-size: 1.4rem;">⚙️ Pengaturan Zenith</h3>
-                <button id="btn-close-settings" style="background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    <!-- Victory Modal -->
+    <div class="modal-overlay" id="modal-victory">
+        <div class="modal-card">
+            <div style="font-size: 3.5rem;">🏆</div>
+            <h2 class="modal-title" id="modal-victory-title">Pulau Berhasil Dibebaskan!</h2>
+            <p class="modal-desc" id="modal-victory-desc">Ketajaman nalar Anda mengalahkan kabut kebodohan!</p>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: var(--radius-md);" id="modal-victory-reward">
+                Bonus: +150 Koin Emas & +200 EXP
+            </div>
+            <button class="modal-btn-primary" id="btn-victory-claim">Ambil Hadiah & Lanjutkan</button>
+        </div>
+    </div>
+
+    <!-- Profile & Badges Modal -->
+    <div class="modal-overlay" id="modal-profile">
+        <div class="modal-card">
+            <div style="font-size: 3rem;">🧙‍♂️</div>
+            <h2 class="modal-title" id="profile-title">Ksatria Cendekia</h2>
+            <div style="display: inline-block; background: #3b82f6; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 700;" id="profile-level-badge">Lv. 1</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: left; background: rgba(255,255,255,0.04); padding: 1rem; border-radius: var(--radius-md);">
+                <div>Total Soal Dijawab: <strong id="profile-total-answered">0</strong></div>
+                <div>Jawaban Benar: <strong id="profile-correct-answers" style="color: #10b981;">0</strong></div>
+                <div>Combo Maksimal: <strong id="profile-max-combo" style="color: #f59e0b;">0</strong></div>
+                <div>Bos Ditaklukkan: <strong id="profile-bosses" style="color: #ec4899;">0</strong></div>
             </div>
 
-            <form id="form-settings" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div class="setting-row">
-                    <span class="setting-label">Durasi Fokus (Menit)</span>
-                    <input type="number" class="setting-input-num" id="setting-focus-time" min="1" max="90" value="25">
+            <div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem; font-weight: 600;">Lencana & Gelar Kehormatan:</div>
+                <div class="badges-container" id="profile-badges-list">
+                    <span class="badge-icon">🌱</span>
+                </div>
+            </div>
+
+            <button class="modal-btn-primary" id="btn-close-profile">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Shop / Refill Spells Modal -->
+    <div class="modal-overlay" id="modal-shop">
+        <div class="modal-card">
+            <div style="font-size: 3rem;">🛒</div>
+            <h2 class="modal-title">Toko Cendekia</h2>
+            <p class="modal-desc" id="shop-coins-text">Koin Anda: 🪙 100</p>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700;">🪄 Mantra 50:50</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">Eliminasi 2 pilihan jawaban salah</div>
+                    </div>
+                    <button class="modal-btn-primary" id="buy-5050" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">50 🪙</button>
                 </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Istirahat Pendek (Menit)</span>
-                    <input type="number" class="setting-input-num" id="setting-short-break" min="1" max="30" value="5">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700;">⏳ Pembeku Waktu</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">Hentikan batas waktu +10 detik</div>
+                    </div>
+                    <button class="modal-btn-primary" id="buy-freeze" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">60 🪙</button>
                 </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Istirahat Panjang (Menit)</span>
-                    <input type="number" class="setting-input-num" id="setting-long-break" min="1" max="60" value="15">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700;">🛡️ Perisai Cendekia</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">Tangkis 1 kesalahan tanpa luka</div>
+                    </div>
+                    <button class="modal-btn-primary" id="buy-shield" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">70 🪙</button>
                 </div>
+            </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Interval Siklus Istirahat Panjang</span>
-                    <input type="number" class="setting-input-num" id="setting-cycle-interval" min="2" max="10" value="4">
-                </div>
-
-                <div class="setting-row">
-                    <span class="setting-label">Mulai Istirahat Otomatis</span>
-                    <input type="checkbox" class="setting-toggle" id="setting-auto-break">
-                </div>
-
-                <div class="setting-row">
-                    <span class="setting-label">Mulai Fokus Otomatis</span>
-                    <input type="checkbox" class="setting-toggle" id="setting-auto-focus">
-                </div>
-
-                <div class="setting-row">
-                    <span class="setting-label">Suara Detik Jam (Ticking)</span>
-                    <input type="checkbox" class="setting-toggle" id="setting-ticking">
-                </div>
-
-                <div class="setting-row">
-                    <span class="setting-label">Volume Suara & Ambience</span>
-                    <input type="range" id="setting-volume" min="0" max="1" step="0.05" value="0.7" style="accent-color: var(--theme-accent); cursor: pointer;">
-                </div>
-
-                <button type="submit" class="btn-timer-primary" style="margin-top: 1rem; justify-content: center; width: 100%; padding: 0.8rem;">
-                    Simpan Pengaturan
-                </button>
-            </form>
+            <button class="modal-btn-primary" id="btn-close-shop" style="background: rgba(255,255,255,0.1); box-shadow: none;">Tutup</button>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="js/audio.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>
