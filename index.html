@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Focus: Pomodoro & Productivity OS</title>
+    <meta name="description" content="Aplikasi Pomodoro futuristik berfitur lengkap: Circular Neon Timer, Ambience Soundscapes, Taman Fokus Virtual (Plant a Tree), Task Manager Terpadu, dan Analisis Produktivitas.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-focus">
+    <div class="app-shell">
+        <!-- TOP NAVIGATION BAR -->
+        <header class="top-nav">
+            <div class="brand-wrap">
+                <div class="brand-icon">⚡</div>
+                <div>
+                    <h1 class="brand-title">Zenith Focus</h1>
+                    <div class="brand-caption">Productivity & Pomodoro OS</div>
+                </div>
+            </div>
+
+            <!-- View Switcher Tabs -->
+            <nav class="view-tabs-bar">
+                <button class="nav-tab-btn active" data-view="timer">⏱️ Timer</button>
+                <button class="nav-tab-btn" data-view="garden">🌲 Taman Fokus</button>
+                <button class="nav-tab-btn" data-view="stats">📊 Statistik</button>
+            </nav>
+
+            <!-- Nav Action Buttons -->
+            <div class="nav-actions">
+                <button class="btn-nav-control" id="btn-toggle-fullscreen" title="Layar Penuh (Zen Mode)">⛶ Fullscreen</button>
+                <button class="btn-nav-control" id="btn-open-settings" title="Pengaturan Durasi & Suara">⚙️ Pengaturan</button>
+            </div>
+        </header>
+
+        <!-- ==========================================================
+             VIEW 1: POMODORO TIMER PANEL
+             ========================================================== -->
+        <main class="app-view-panel active" id="view-timer">
+            <div class="timer-card-wrapper">
+                <!-- Mode Switchers -->
+                <div class="mode-switch-group">
+                    <button class="mode-btn active" data-mode="focus">🍅 Fokus</button>
+                    <button class="mode-btn" data-mode="shortBreak">☕ Istirahat Pendek</button>
+                    <button class="mode-btn" data-mode="longBreak">🌴 Istirahat Panjang</button>
+                </div>
+
+                <!-- Active Pinned Task Banner -->
+                <div class="active-task-banner" id="active-task-banner">
+                    <span>🎯</span>
+                    <span id="active-task-text">Sedang Fokus: Mempelajari materi baru</span>
+                </div>
+
+                <!-- Circular Neon Glow Progress Ring -->
+                <div class="timer-dial-container">
+                    <svg class="timer-svg" viewBox="0 0 320 320">
+                        <!-- Background Circle Track -->
+                        <circle class="circle-track" cx="160" cy="160" r="140"></circle>
+                        <!-- Dynamic Progress Fill -->
+                        <circle class="circle-progress" id="timer-circle-progress" cx="160" cy="160" r="140"></circle>
+                    </svg>
+
+                    <!-- Inner Timer Display -->
+                    <div class="timer-inner-content">
+                        <span class="timer-mode-tag" id="timer-mode-tag">Sesi Fokus</span>
+                        <div class="timer-time-display" id="timer-time">25:00</div>
+                        <span class="cycle-indicator" id="timer-cycle-indicator">Siklus #1 dari 4</span>
+                    </div>
+                </div>
+
+                <!-- Timer Controls Toolbar -->
+                <div class="timer-controls-group">
+                    <button class="btn-timer-secondary" id="btn-timer-reset" title="Ulangi waktu (Shortcut: R)">🔄 Reset</button>
+                    <button class="btn-timer-primary" id="btn-timer-start" title="Mulai / Jeda (Shortcut: Spasi)">
+                        <span>▶</span> Mulai
+                    </button>
+                    <button class="btn-timer-secondary" id="btn-timer-skip" title="Lewati ke sesi berikutnya">⏭ Lewati</button>
+                    <button class="btn-timer-secondary" id="btn-add-5min" title="Tambah 5 Menit">+5 Menit</button>
+                </div>
+            </div>
+
+            <!-- Ambience Soundscapes Section -->
+            <section class="ambience-section">
+                <div class="ambience-title">
+                    <span>🎧</span> Suara Ambience Fokus (100% Offline Synthesizer)
+                </div>
+                <div class="ambience-grid">
+                    <button class="ambience-btn" data-ambience="rain">
+                        <span style="font-size: 1.5rem;">🌧️</span>
+                        <span>Hujan Lembut</span>
+                    </button>
+                    <button class="ambience-btn" data-ambience="campfire">
+                        <span style="font-size: 1.5rem;">🪵</span>
+                        <span>Api Unggun</span>
+                    </button>
+                    <button class="ambience-btn" data-ambience="waves">
+                        <span style="font-size: 1.5rem;">🌊</span>
+                        <span>Ombak Pantai</span>
+                    </button>
+                    <button class="ambience-btn" data-ambience="binaural">
+                        <span style="font-size: 1.5rem;">🧠</span>
+                        <span>Binaural 40Hz</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Integrated Focus Task Manager -->
+            <section class="tasks-panel">
+                <div class="tasks-header">
+                    <h3 class="tasks-title">📋 Target Fokus Hari Ini</h3>
+                </div>
+
+                <!-- Add Task Form -->
+                <form class="form-task-add" id="form-add-task">
+                    <input type="text" class="input-task-text" id="input-task-title" placeholder="Apa yang ingin Anda selesaikan sekarang?" required>
+                    <input type="number" class="input-task-number" id="input-task-est" min="1" max="12" value="1" title="Target jumlah pomodoro" style="width: 70px;">
+                    <select class="select-task-priority" id="select-task-priority">
+                        <option value="high">Prioritas Tinggi</option>
+                        <option value="medium" selected>Prioritas Sedang</option>
+                        <option value="low">Prioritas Rendah</option>
+                    </select>
+                    <button type="submit" class="btn-task-submit">+ Tambah Tugas</button>
+                </form>
+
+                <!-- Task Items Container -->
+                <div class="tasks-list-container" id="tasks-list-container">
+                    <!-- Populated dynamically by JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <!-- ==========================================================
+             VIEW 2: FOCUS GARDEN (GAMIFICATION)
+             ========================================================== -->
+        <main class="app-view-panel" id="view-garden">
+            <div class="garden-header">
+                <div>
+                    <h2 style="font-family: var(--font-heading); font-size: 1.6rem;">🌲 Taman Fokus Virtual</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Setiap sesi fokus 25 menit yang tuntas akan menumbuhkan pohon virtual bercahaya untuk menghijaukan taman produktivitas Anda.</p>
+                </div>
+                <div class="hud-value-badge" id="garden-count-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 1rem; border-color: #10b981;">
+                    0 Pohon Mekar
+                </div>
+            </div>
+
+            <!-- Virtual Forest Grid -->
+            <div class="garden-grid" id="garden-grid">
+                <!-- Trees rendered dynamically -->
+            </div>
+        </main>
+
+        <!-- ==========================================================
+             VIEW 3: PRODUCTIVITY ANALYTICS & STATS
+             ========================================================== -->
+        <main class="app-view-panel" id="view-stats">
+            <!-- Metrics Summary Cards -->
+            <div class="stats-summary-grid">
+                <div class="stat-metric-card">
+                    <span class="stat-metric-label">Total Waktu Fokus</span>
+                    <span class="stat-metric-val" id="stat-total-time">0 Jam</span>
+                </div>
+                <div class="stat-metric-card">
+                    <span class="stat-metric-label">Sesi Pomodoro Selesai</span>
+                    <span class="stat-metric-val" id="stat-total-pomodoros">0 Sesi</span>
+                </div>
+                <div class="stat-metric-card">
+                    <span class="stat-metric-label">Streak Produktif</span>
+                    <span class="stat-metric-val" id="stat-streak">1 Hari 🔥</span>
+                </div>
+                <div class="stat-metric-card">
+                    <span class="stat-metric-label">Pohon Ditanam</span>
+                    <span class="stat-metric-val" id="stat-trees">0 🌲</span>
+                </div>
+            </div>
+
+            <!-- Weekly Activity Bar Chart -->
+            <div class="chart-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.25rem;">Aktivitas Fokus 7 Hari Terakhir</h3>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">(Satuan: Menit)</span>
+                </div>
+                <div class="chart-bars-wrap" id="stats-weekly-chart">
+                    <!-- Weekly bars rendered dynamically -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==========================================================
+         SETTINGS MODAL
+         ========================================================== -->
+    <div class="modal-overlay" id="modal-settings">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3 style="font-family: var(--font-heading); font-size: 1.4rem;">⚙️ Pengaturan Zenith</h3>
+                <button id="btn-close-settings" style="background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <form id="form-settings" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div class="setting-row">
+                    <span class="setting-label">Durasi Fokus (Menit)</span>
+                    <input type="number" class="setting-input-num" id="setting-focus-time" min="1" max="90" value="25">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Istirahat Pendek (Menit)</span>
+                    <input type="number" class="setting-input-num" id="setting-short-break" min="1" max="30" value="5">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Istirahat Panjang (Menit)</span>
+                    <input type="number" class="setting-input-num" id="setting-long-break" min="1" max="60" value="15">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Interval Siklus Istirahat Panjang</span>
+                    <input type="number" class="setting-input-num" id="setting-cycle-interval" min="2" max="10" value="4">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Mulai Istirahat Otomatis</span>
+                    <input type="checkbox" class="setting-toggle" id="setting-auto-break">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Mulai Fokus Otomatis</span>
+                    <input type="checkbox" class="setting-toggle" id="setting-auto-focus">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Suara Detik Jam (Ticking)</span>
+                    <input type="checkbox" class="setting-toggle" id="setting-ticking">
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-label">Volume Suara & Ambience</span>
+                    <input type="range" id="setting-volume" min="0" max="1" step="0.05" value="0.7" style="accent-color: var(--theme-accent); cursor: pointer;">
+                </div>
+
+                <button type="submit" class="btn-timer-primary" style="margin-top: 1rem; justify-content: center; width: 100%; padding: 0.8rem;">
+                    Simpan Pengaturan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
