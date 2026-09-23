@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Shadow Duel - Fighting Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #05060a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #wrap { position: relative; }
+        canvas {
+            display: block;
+            border: 3px solid #1a1428;
+            border-radius: 6px;
+            box-shadow: 0 0 40px rgba(126, 249, 255, 0.15), 0 10px 50px rgba(0,0,0,0.8);
+            touch-action: none;
+        }
+        #controls {
+            margin-top: 10px;
+            text-align: center;
+            color: #55586b;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+        #controls b { color: #8a8ea8; }
+        #controls .gold { color: #ffd76a; }
+
+        /* error overlay */
+        #err {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,5,20,0.97);
+            color: #ff6b6b;
+            font: 14px/1.6 Consolas, monospace;
+            padding: 40px;
+            white-space: pre-wrap;
+            z-index: 999;
+            overflow: auto;
+        }
+
+        /* touch controls */
+        #touchUI {
+            display: none;
+            position: relative;
+            width: 960px;
+            margin-top: 6px;
+        }
+        .tbtn {
+            position: absolute;
+            bottom: 0;
+            width: 74px; height: 74px;
+            border-radius: 50%;
+            background: rgba(126,249,255,0.12);
+            border: 2px solid rgba(126,249,255,0.45);
+            color: #7ef9ff;
+            font: bold 15px 'Segoe UI', Arial;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+            box-shadow: 0 0 14px rgba(126,249,255,0.2);
+        }
+        .tbtn:active { background: rgba(126,249,255,0.35); }
+        .tbtn.gold {
+            background: rgba(255,215,106,0.12);
+            border-color: rgba(255,215,106,0.5);
+            color: #ffd76a;
+        }
+        .tbtn.red {
+            background: rgba(255,91,106,0.14);
+            border-color: rgba(255,91,106,0.5);
+            color: #ff9fae;
+        }
+        #tLeft  { left: 10px; }
+        #tRight { left: 96px; }
+        #tJump  { left: 182px; }
+        #tPunch { right: 190px; }
+        #tKick  { right: 104px; }
+        #tBlock { right: 18px; }
+        #tSpecial { right: 276px; }
+        #tDash { right: 362px; }
+
+        @media (max-width: 1000px) {
+            #touchUI { width: 96vw; }
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <canvas id="gameCanvas" width="960" height="540"></canvas>
+        <div id="touchUI">
+            <div class="tbtn" id="tLeft">◀</div>
+            <div class="tbtn" id="tRight">▶</div>
+            <div class="tbtn" id="tJump">▲</div>
+            <div class="tbtn gold" id="tSpecial">⚡</div>
+            <div class="tbtn" id="tDash">»»</div>
+            <div class="tbtn" id="tPunch">PUKUL</div>
+            <div class="tbtn" id="tKick">TENDANG</div>
+            <div class="tbtn red" id="tBlock">BLOK</div>
+        </div>
+        <div id="controls">
+            <b>← →</b>/<b>A D</b> Gerak &nbsp;•&nbsp; <b>Shift</b> Dash &nbsp;•&nbsp; <b>J</b>/<b>Z</b> Pukul &nbsp;•&nbsp; <b>K</b>/<b>X</b> Tendang
+            &nbsp;•&nbsp; <b>S</b>/<b>↓</b> Blok &nbsp;•&nbsp; <b class="gold">L</b>/<b class="gold">C</b> Serangan Rahasia &nbsp;•&nbsp; <b>W</b>/<b>↑</b> Lompat &nbsp;•&nbsp; <b>Enter</b> Mulai
+        </div>
+    </div>
+    <div id="err"></div>
+    <script>
+        // Show any runtime error on screen so issues are visible
+        window.addEventListener('error', function (e) {
+            var el = document.getElementById('err');
+            el.style.display = 'block';
+            el.textContent = 'ERROR: ' + (e.message || 'unknown') + '\n\n' + (e.filename || '') + ':' + (e.lineno || '');
+        });
+    </script>
+    <script src="game.js"></script>
+</body>
+</html>
